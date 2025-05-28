@@ -51,19 +51,19 @@ Open a new terminal window and install the dependencies for the frontend.
 _Make sure you have Node.js 20+ installed._
 ```
 cd frontend
-npm install
+bun install
 ```
 
 Make sure WiFi Dongle is plugged in, drone is turned on, connect to the "BRAND-MODEL-XXXXXX" network before proceeding.
 
 Launch the backend: 
 ```
-uvicorn web_server:app
+uv run uvicorn web_server:app
 ```
 
 Launch the frontend web client:
 ```
-npm run dev
+bun dev
 ```
 
 Open the web client which will be at `http://localhost:5173` and you should see the drone video feed and be able to control it.
