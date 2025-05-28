@@ -1,0 +1,12 @@
+[project]
+name = "backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.12",
+    "numpy>=1.19.2",
+    "opencv-python>=4.5.1.48",
+    "python-multipart>=0.0.20",
+    "starlette>=0.46.2",
+    "uvicorn[standard]>=0.34.2",
+]
