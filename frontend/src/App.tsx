@@ -4,6 +4,7 @@ import { useControls } from "./hooks/useControls";
 import { ControlSchemeToggle } from "./components/ControlSchemeToggle";
 import VideoFeed from "./components/VideoFeed";
 import ControlsOverlay from "./components/ControlsOverlay";
+import { SettingsDialog } from "./components/settings-dialog";
 
 const ws = new WSClient("ws://localhost:8000/ws");
 
@@ -20,6 +21,11 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-black text-white">
+      {/* Settings button in top-right corner */}
+      <div className="absolute top-4 right-4 z-30">
+        <SettingsDialog />
+      </div>
+      
       <ControlSchemeToggle 
         mode={mode} 
         setMode={setMode} 
