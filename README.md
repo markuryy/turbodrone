@@ -26,6 +26,27 @@ Nowadays, there are incredibly cheap "toy" drones available on Amazon that are b
 
 
 ## Setup
+
+### Quick Setup (Recommended)
+
+**macOS/Linux:**
+```bash
+./install-macos.sh
+./start.sh
+```
+
+**Windows:**
+```powershell
+# Run in PowerShell as Administrator (recommended)
+.\install-windows.ps1
+.\start-windows.ps1
+
+# OR use the batch file alternative
+.\install-windows.bat
+.\start-windows.bat
+```
+
+### Manual Setup
 Move to the `backend` directory
 ```
 cd backend
