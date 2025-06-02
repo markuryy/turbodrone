@@ -121,6 +121,7 @@ class S2xDroneModel(BaseRCModel):
             "pitch":     self.pitch,
             "roll":      self.roll,
             "recording": self.record_state > 0,
+            "headless":  self.headless_flag,
         }
 
     def set_strategy(self, strategy) -> None:

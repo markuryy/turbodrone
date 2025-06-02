@@ -5,9 +5,17 @@ interface Props {
   mode: ControlMode;
   setMode: (m: ControlMode) => void;
   gamepadConnected: boolean;
+  headlessMode: boolean;
+  toggleHeadlessMode: () => void;
 }
 
-export const ControlSchemeToggle: React.FC<Props> = ({ mode, setMode, gamepadConnected }) => {
+export const ControlSchemeToggle: React.FC<Props> = ({ 
+  mode, 
+  setMode, 
+  gamepadConnected,
+  headlessMode,
+  toggleHeadlessMode
+}) => {
   /* helpers ensure Pointer-Lock is requested inside the user gesture */
   const toKeyboard = () => setMode("inc");
 
@@ -60,6 +68,21 @@ export const ControlSchemeToggle: React.FC<Props> = ({ mode, setMode, gamepadCon
           </button>
         </div>
 
+        {/* Headless Mode Toggle */}
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={toggleHeadlessMode}
+            className={`px-3 py-1.5 rounded text-sm font-medium ${
+              headlessMode ? "bg-purple-600" : "bg-gray-600 hover:bg-gray-500"
+            }`}
+          >
+            {headlessMode ? "Headless: ON" : "Headless: OFF"}
+          </button>
+          <div className="text-xs text-gray-400">
+            <span title="Controls relative to pilot, not drone orientation">ℹ️</span>
+          </div>
+        </div>
+
         {/* status / hints */}
         <div className="text-xs text-gray-400 text-center">
           Current&nbsp;
@@ -73,4 +96,4 @@ export const ControlSchemeToggle: React.FC<Props> = ({ mode, setMode, gamepadCon
       </div>
     </div>
   );
-}; 
+};

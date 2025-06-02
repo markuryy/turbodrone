@@ -18,15 +18,19 @@ export function useControls(ws: WSClient): {
   mode: ControlMode;
   setMode: (m: ControlMode) => void;
   gamepadConnected: boolean;
+  headlessMode: boolean;
+  toggleHeadlessMode: () => void;
 } {
   /* ------- state refs (mutable) ------- */
   const axesRef = useRef<Axes>({ throttle: 0, yaw: 0, pitch: 0, roll: 0 });
   const modeRef = useRef<ControlMode>("inc");
+  const headlessModeRef = useRef<boolean>(false);
 
   /* ------- state that triggers re-renders ------- */
   const [axes,  setAxes]  = useState<Axes>(axesRef.current);
   const [mode,  setModeSt] = useState<ControlMode>("inc");
   const [gamepadConnected, setGamepadConnected] = useState<boolean>(false);
+  const [headlessMode, setHeadlessMode] = useState<boolean>(false);
 
   // Track previous gamepad status to avoid spam
   const prevGamepadStatus = useRef<boolean>(false);
@@ -35,6 +39,13 @@ export function useControls(ws: WSClient): {
   const setMode = useCallback((m: ControlMode) => {
     modeRef.current = m;
     setModeSt(m);
+  }, []);
+
+  /* toggle headless mode */
+  const toggleHeadlessMode = useCallback(() => {
+    const newHeadlessMode = !headlessModeRef.current;
+    headlessModeRef.current = newHeadlessMode;
+    setHeadlessMode(newHeadlessMode);
   }, []);
 
   /* --------------- gamepad detection --------------- */
@@ -195,10 +206,15 @@ export function useControls(ws: WSClient): {
   useEffect(() => {
     const id = setInterval(() => {
       const modeForBackend = modeRef.current === "mouse" ? "abs" : modeRef.current;
-      ws.send({ type: "axes", mode: modeForBackend, ...axesRef.current });
+      ws.send({ 
+        type: "axes", 
+        mode: modeForBackend, 
+        headless: headlessModeRef.current,
+        ...axesRef.current 
+      });
     }, 1000 / 30);
     return () => clearInterval(id);
   }, [ws]);
 
-  return { axes, mode, setMode, gamepadConnected };
+  return { axes, mode, setMode, gamepadConnected, headlessMode, toggleHeadlessMode };
 }

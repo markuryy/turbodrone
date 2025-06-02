@@ -37,7 +37,11 @@ class S2xRCProtocolAdapter(BaseProtocolAdapter):
         # Byte 7 - base value 0x0a
         pkt[7] = 0x0a
         
-        # Record flag
+        # Headless mode flag (bit 0)
+        if drone_model.headless_flag:
+            pkt[7] |= 0x01
+        
+        # Record flag (bit 2)
         if drone_model.record_state:
             pkt[7] |= (drone_model.record_state << 2)
 

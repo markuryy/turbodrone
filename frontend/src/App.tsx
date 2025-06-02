@@ -9,7 +9,7 @@ import { SettingsDialog } from "./components/settings-dialog";
 const ws = new WSClient("ws://localhost:8000/ws");
 
 export default function App() {
-  const { axes, mode, setMode, gamepadConnected } = useControls(ws);
+  const { axes, mode, setMode, gamepadConnected, headlessMode, toggleHeadlessMode } = useControls(ws);
 
   const handleTakeoff = () => {
     ws.send({ type: "takeoff" });
@@ -30,6 +30,8 @@ export default function App() {
         mode={mode} 
         setMode={setMode} 
         gamepadConnected={gamepadConnected}
+        headlessMode={headlessMode}
+        toggleHeadlessMode={toggleHeadlessMode}
       />
       <VideoFeed />
       <ControlsOverlay axes={axes} onTakeoff={handleTakeoff} onLand={handleLand} />

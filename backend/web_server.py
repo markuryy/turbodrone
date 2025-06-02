@@ -194,6 +194,10 @@ async def ws_endpoint(ws: WebSocket) -> None:
                     if not isinstance(flight_controller.model.strategy, IncrementalStrategy):
                         flight_controller.model.set_strategy(IncrementalStrategy())
 
+                # Set headless mode flag if provided
+                if "headless" in data:
+                    flight_controller.model.headless_flag = data["headless"]
+
                 flight_controller.set_axes(
                     data["throttle"], data["yaw"], data["pitch"], data["roll"]
                 )
