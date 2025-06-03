@@ -59,10 +59,16 @@ bun dev --host 0.0.0.0 &
 FRONTEND_PID=$!
 cd "$PROJECT_ROOT"
 
+# Get network IP address for external access
+NETWORK_IP=$(hostname -I | awk '{print $1}' 2>/dev/null || ip route get 1.1.1.1 2>/dev/null | grep -oP 'src \K\S+' || echo "")
+
 echo ""
 echo "Both applications are starting up!"
 echo ""
 echo "Frontend (Web Client): http://localhost:5173"
+if [ -n "$NETWORK_IP" ]; then
+    echo "Network Access: http://$NETWORK_IP:5173"
+fi
 echo "Backend API: http://localhost:8000"
 echo ""
 echo "Note: Make sure your drone is powered on and you're connected to its WiFi network"
