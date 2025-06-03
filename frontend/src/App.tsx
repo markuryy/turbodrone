@@ -10,6 +10,11 @@ const ws = new WSClient("ws://localhost:8000/ws");
 
 export default function App() {
   const { axes, mode, setMode, gamepadConnected, headlessMode, toggleHeadlessMode } = useControls(ws);
+  const [showStickVisualizers, setShowStickVisualizers] = React.useState(true);
+
+  const toggleStickVisualizers = () => {
+    setShowStickVisualizers(prev => !prev);
+  };
 
   // Global escape key handler for TrackPoint mode
   React.useEffect(() => {
@@ -41,10 +46,12 @@ export default function App() {
           gamepadConnected={gamepadConnected}
           headlessMode={headlessMode}
           toggleHeadlessMode={toggleHeadlessMode}
+          showStickVisualizers={showStickVisualizers}
+          toggleStickVisualizers={toggleStickVisualizers}
         />
       </div>
       <VideoFeed />
-      <ControlsOverlay axes={axes} onTakeoff={handleTakeoff} onLand={handleLand} />
+      <ControlsOverlay axes={axes} onTakeoff={handleTakeoff} onLand={handleLand} showStickVisualizers={showStickVisualizers} />
     </div>
   );
 }

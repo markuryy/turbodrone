@@ -38,6 +38,8 @@ interface SettingsDialogProps {
   gamepadConnected: boolean;
   headlessMode: boolean;
   toggleHeadlessMode: () => void;
+  showStickVisualizers: boolean;
+  toggleStickVisualizers: () => void;
 }
 
 export function SettingsDialog({ 
@@ -45,7 +47,9 @@ export function SettingsDialog({
   setMode, 
   gamepadConnected, 
   headlessMode, 
-  toggleHeadlessMode 
+  toggleHeadlessMode,
+  showStickVisualizers,
+  toggleStickVisualizers
 }: SettingsDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [activeSection, setActiveSection] = React.useState("Controls")
@@ -187,9 +191,25 @@ export function SettingsDialog({
                   )}
                   {activeSection === "UI" && (
                     <div className="space-y-4">
-                      <p className="text-sm text-gray-400">Configure user interface settings</p>
-                      <div className="bg-gray-800 p-4 rounded-lg">
-                        <p className="text-sm text-gray-300">UI settings will be implemented here</p>
+                      <p className="text-sm text-gray-400">Configure user interface display options</p>
+                      
+                      {/* Stick Visualizers Toggle */}
+                      <div className="bg-gray-800 p-4 rounded-lg space-y-3">
+                        <h4 className="text-sm font-medium text-gray-200">HUD Elements</h4>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={toggleStickVisualizers}
+                            className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                              showStickVisualizers ? "bg-blue-600 text-white" : "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                            }`}
+                          >
+                            {showStickVisualizers ? "Stick Visualizers: ON" : "Stick Visualizers: OFF"}
+                          </button>
+                          <div className="text-xs text-gray-400 flex items-center gap-1">
+                            <span title="Show/hide stick position indicators in the HUD">ℹ️</span>
+                            <span>Toggle stick position indicators</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}

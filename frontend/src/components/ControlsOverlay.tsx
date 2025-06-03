@@ -6,9 +6,10 @@ interface ControlsOverlayProps {
   axes: Axes;
   onTakeoff: () => void;
   onLand: () => void;
+  showStickVisualizers: boolean;
 }
 
-export default function ControlsOverlay({ axes, onTakeoff, onLand }: ControlsOverlayProps) {
+export default function ControlsOverlay({ axes, onTakeoff, onLand, showStickVisualizers }: ControlsOverlayProps) {
   const left   = { x: axes.roll,     y: axes.pitch };
   const right  = { x: axes.yaw,      y: axes.throttle };
 
@@ -35,12 +36,14 @@ export default function ControlsOverlay({ axes, onTakeoff, onLand }: ControlsOve
         {/* Command Buttons Cluster */}
         <CommandButtons onTakeoff={onTakeoff} onLand={onLand} />
 
-        {/* Sticks */}
-        <div className="flex gap-10">
-          <AxisIndicator {...left}  label="PITCH / ROLL" />
-          <AxisIndicator {...right} label="YAW / THROTTLE" />
-        </div>
+        {/* Sticks - conditionally rendered */}
+        {showStickVisualizers && (
+          <div className="flex gap-10">
+            <AxisIndicator {...left}  label="PITCH / ROLL" />
+            <AxisIndicator {...right} label="YAW / THROTTLE" />
+          </div>
+        )}
       </div>
     </div>
   );
-} 
+}
