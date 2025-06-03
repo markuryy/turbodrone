@@ -2,19 +2,10 @@ import * as React from "react"
 import {
   Gamepad2,
   Settings,
-  Video,
-  Wifi,
-  Plane,
 } from "lucide-react"
+import type { ControlMode } from "../hooks/useControls"
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -37,14 +28,25 @@ import {
 const data = {
   nav: [
     { name: "Controls", icon: Gamepad2 },
-    { name: "Connection", icon: Wifi },
-    { name: "Video", icon: Video },
-    { name: "Flight", icon: Plane },
-    { name: "Advanced", icon: Settings },
+    { name: "UI", icon: Settings },
   ],
 }
 
-export function SettingsDialog() {
+interface SettingsDialogProps {
+  mode: ControlMode;
+  setMode: (m: ControlMode) => void;
+  gamepadConnected: boolean;
+  headlessMode: boolean;
+  toggleHeadlessMode: () => void;
+}
+
+export function SettingsDialog({ 
+  mode, 
+  setMode, 
+  gamepadConnected, 
+  headlessMode, 
+  toggleHeadlessMode 
+}: SettingsDialogProps) {
   const [open, setOpen] = React.useState(false)
   const [activeSection, setActiveSection] = React.useState("Controls")
 
@@ -83,62 +85,111 @@ export function SettingsDialog() {
             </SidebarContent>
           </Sidebar>
           <main className="flex h-[480px] flex-1 flex-col overflow-hidden bg-gray-900">
-            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 bg-gray-800 border-b border-gray-700">
-              <div className="flex items-center gap-2 px-4">
-                <Breadcrumb className="text-gray-300">
-                  <BreadcrumbList>
-                    <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href="#">Settings</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{activeSection}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-            </header>
-            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0">
+            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
               <div className="text-gray-300">
-                <h3 className="text-lg font-semibold mb-4">{activeSection} Settings</h3>
+                <h3 className="text-lg font-semibold mb-4 pt-4">{activeSection} Settings</h3>
                 <div className="space-y-4">
                   {activeSection === "Controls" && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-400">Configure control sensitivity and key bindings</p>
-                      <div className="bg-gray-800 p-4 rounded-lg">
-                        <p className="text-sm">Control settings will be implemented here</p>
+                    <div className="space-y-4">
+                      <p className="text-sm text-gray-400">Configure control input method and flight mode</p>
+                      
+                      {/* Control Mode Selection */}
+                      <div className="bg-gray-800 p-4 rounded-lg space-y-4">
+                        <h4 className="text-sm font-medium text-gray-200">Input Method</h4>
+                        <div className="flex flex-wrap gap-3">
+                          <button
+                            onClick={() => setMode("inc")}
+                            className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                              mode === "inc" ? "bg-sky-600 text-white" : "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                            }`}
+                          >
+                            Keyboard
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (gamepadConnected) setMode("abs");
+                            }}
+                            disabled={!gamepadConnected}
+                            className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                              mode === "abs"
+                                ? "bg-green-600 text-white"
+                                : gamepadConnected
+                                  ? "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                                  : "bg-gray-700 cursor-not-allowed opacity-60 text-gray-400"
+                            }`}
+                          >
+                            Gamepad
+                          </button>
+                          <button
+                            onClick={() => {
+                              document.body.requestPointerLock();
+                              setMode("mouse");
+                              setOpen(false);
+                            }}
+                            className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                              mode === "mouse"
+                                ? "bg-red-600 text-white"
+                                : "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                            }`}
+                          >
+                            TrackPoint
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Headless Mode Toggle */}
+                      <div className="bg-gray-800 p-4 rounded-lg space-y-3">
+                        <h4 className="text-sm font-medium text-gray-200">Flight Mode</h4>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={toggleHeadlessMode}
+                            className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                              headlessMode ? "bg-purple-600 text-white" : "bg-gray-600 hover:bg-gray-500 text-gray-200"
+                            }`}
+                          >
+                            {headlessMode ? "Headless: ON" : "Headless: OFF"}
+                          </button>
+                          <div className="text-xs text-gray-400 flex items-center gap-1">
+                            <span title="Controls relative to pilot, not drone orientation">ℹ️</span>
+                            <span>Controls relative to pilot orientation</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Status Display */}
+                      <div className="bg-gray-800 p-4 rounded-lg space-y-2">
+                        <h4 className="text-sm font-medium text-gray-200">Status</h4>
+                        <div className="text-sm text-gray-300">
+                          <div className="flex justify-between items-center">
+                            <span>Current Input:</span>
+                            <span className="font-semibold text-gray-100">
+                              {mode === "inc" ? "Keyboard"
+                                : mode === "abs" ? "Gamepad"
+                                : "TrackPoint"}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span>Gamepad:</span>
+                            <span className={`font-semibold ${
+                              gamepadConnected ? "text-green-400" : "text-red-400"
+                            }`}>
+                              {gamepadConnected ? "Connected" : "Disconnected"}
+                            </span>
+                          </div>
+                          {mode === "mouse" && (
+                            <div className="text-xs text-gray-400 mt-2">
+                              Press Esc to release mouse lock
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
-                  {activeSection === "Connection" && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-400">Configure WebSocket connection settings</p>
+                  {activeSection === "UI" && (
+                    <div className="space-y-4">
+                      <p className="text-sm text-gray-400">Configure user interface settings</p>
                       <div className="bg-gray-800 p-4 rounded-lg">
-                        <p className="text-sm">Connection settings will be implemented here</p>
-                      </div>
-                    </div>
-                  )}
-                  {activeSection === "Video" && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-400">Configure video feed settings</p>
-                      <div className="bg-gray-800 p-4 rounded-lg">
-                        <p className="text-sm">Video settings will be implemented here</p>
-                      </div>
-                    </div>
-                  )}
-                  {activeSection === "Flight" && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-400">Configure flight safety and parameters</p>
-                      <div className="bg-gray-800 p-4 rounded-lg">
-                        <p className="text-sm">Flight settings will be implemented here</p>
-                      </div>
-                    </div>
-                  )}
-                  {activeSection === "Advanced" && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-400">Advanced system settings</p>
-                      <div className="bg-gray-800 p-4 rounded-lg">
-                        <p className="text-sm">Advanced settings will be implemented here</p>
+                        <p className="text-sm text-gray-300">UI settings will be implemented here</p>
                       </div>
                     </div>
                   )}
