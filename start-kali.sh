@@ -55,7 +55,7 @@ sleep 2
 echo "[Frontend] Starting development server..."
 echo "   Command: cd frontend && bun dev"
 cd "$PROJECT_ROOT/frontend"
-bun dev &
+bun dev --host 0.0.0.0 &
 FRONTEND_PID=$!
 cd "$PROJECT_ROOT"
 
